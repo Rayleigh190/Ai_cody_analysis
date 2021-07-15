@@ -1,0 +1,110 @@
+<div>Teachable Machine Image Model</div>
+<button type="button" onclick="init()">Start</button>
+<div id="webcam-container"></div>
+<div id="label-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+// 무신사 이미지 모델 2
+<script type="text/javascript">
+    // More API functions here:
+    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    // the link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/CrOstxSE0/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    // Load the image model and setup the webcam
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+          var element = document.createElement("div")
+                element.classList.add("d-flex");
+                labelContainer.appendChild(element);
+        }
+    }
+
+    // run the webcam image through the image model
+    async function predict() {
+        // predict can take in an image, video or canvas html element
+        var image = document.getElementById("face-image")
+        const prediction = await model.predict(image, false);
+        prediction.sort((a, b)=> parseFloat(b.probability)-parseFloat(a.probability));
+        var resultTitle, resultExplain;
+        switch(prediction[0].className) {
+          case "casual":
+            resultTitle = "캐주얼 코디"
+            resultExplain = "어머.. 몇살이세요? 동안 처럼 보이는 당신의 깔끔한 코디!"
+            break;
+          case "dandy":
+            resultTitle = "댄디 코디"
+            resultExplain = "칭>< 베일것 같이 각 져있는 당신의 깔끔한 코디!"
+            break;
+          case "formal":
+            resultTitle = "포멀 코디"
+            resultExplain = "홀리~ 무난하고 깔끔하지만 신사적으로 보이는 코디!"
+            break;
+          case "retro":
+            resultTitle = "레트로 코디"
+            resultExplain = "뽕-짝 뽕-짝 카세트 테이프로 노래를 들을것 같은 당신의 코디!"
+            break;
+          case "sports":
+            resultTitle = "스포츠 코디"
+            resultExplain = "헑-헑- 누구보다 강할것 같은 당신의 코디!"
+            break;
+          case "street":
+            resultTitle = "스트릿 코디"
+            resultExplain = "Hey yo~! 누구보다 힙한 당신의 코디!"
+            break;
+          default:
+            resultTitle = "알수없음"
+            resultExplain = "알수없음"
+        }
+        var title = "<div class='" + prediction[0].className + "-cody-title'>" + resultTitle + "</div>"
+        var explain = "<div class='cody-explain pt-2'>" + resultExplain + "</div>"
+        $('.result-message').html(title + explain);
+        var barWidth;
+        for (let i = 0; i < maxPredictions; i++) {
+                if (prediction[i].probability.toFixed(2) > 0.1) {
+                    barWidth = Math.round(prediction[i].probability.toFixed(2) * 100) + "%";
+                } else if (prediction[i].probability.toFixed(2) >= 0.01) {
+                    barWidth = "4%"
+                } else {
+                    barWidth = "2%"
+                }
+                var labelTitle;
+                switch (prediction[i].className) {
+                    case "casual":
+                        labelTitle = "캐주얼"
+                        break;
+                    case "dandy":
+                        labelTitle = "댄디"
+                        break;
+                    case "formal":
+                        labelTitle = "포멀"
+                        break;
+                    case "retro":
+                        labelTitle = "레트로"
+                        break;
+                    case "sports":
+                        labelTitle = "스포츠"
+                        break;
+                    case "street":
+                        labelTitle = "스트릿"
+                        break;
+                    default:
+                        labelTitle = "알수없음"
+                }
+                var label = "<div class='animal-label d-flex align-items-center'>" + labelTitle + "</div>"
+                var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+                labelContainer.childNodes[i].innerHTML = label + bar;
+            }
+      }
+</script>
