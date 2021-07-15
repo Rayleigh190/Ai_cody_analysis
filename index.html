@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  	
+  <meta property="og:title" content="AI(인공지능) 코디 분석" />	
+  <meta property="og:description" content="인공지능이 당신의 코디를 분석해 드립니다." />
+  <meta property="og:type" content="website" />	
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:url" content="https://codyanalysis.ga" />	
+  <meta property="og:image" content="https://img.hankyung.com/photo/201902/01.18963926.1.jpg" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sunflower:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@600&display=swap" rel="stylesheet">
+
+  <title>AI 코디 분석</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fa259eb8ae90229"></script>
+
+<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> -->
+<!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background-color: #282c37">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger navbar-text1" href="#page-top"><img src="images/navbar_img.png" width="30" height="30" class="d-inline-block align-top" alt="" style="margin-right: 7%;">AI 코디 분석</a>
+      <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button> -->
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="text-white" style="background-color: #798b97">
+    <div class="container text-center">
+      <h1>AI 코디 분석에 오신걸 환영합니다.</h1>
+      <p class="lead">인공지능이 당신의 코디를 분석해 드립니다.</p>
+    </div>
+  </header>
+
+  <section id="about">
+
+
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <div class="file-upload container">
+
+      <div class="image-upload-wrap">
+        <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+        <div class="drag-text">
+          <img src="upload.svg" class="upload mt-5 pt-5" style="width: 20%;">
+          <h3 class="mb-5 pb-5 pt-4 upload-text">Drag and drop a file or select add Image</h3>
+        </div>
+      </div>
+      <div class="file-upload-content">
+        <img class="file-upload-image" id="face-image" src="#" alt="your image" />
+        <div id="loading" class="animated bounce">
+          <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+          </div>
+          <p class="text-center">AI가 당신의 코디를 분석중입니다.</p>
+        </div>
+        <p class="result-message"></p>
+        <div id="label-container" class="d-flex flex-column justify-content-around"></div>
+        
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+        <div class="addthis_inline_share_toolbox"></div>
+            
+        <div class="pt-3 image-title-wrap">
+          <button type="button p-2" class="try-again-btn" onclick="window.location.reload();">
+              <span class="try-again-text">다른 사진으로 재시도</span>
+          </button>
+      </div>
+      </div>
+    </div>
+
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script>
+      function readURL(input) {
+        if (input.files && input.files[0]) {
+
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            $('.image-upload-wrap').hide();
+            $('#loading').show();
+            $('.file-upload-image').attr('src', e.target.result);
+            $('.file-upload-content').show();
+
+            $('.image-title').html(input.files[0].name);
+          };
+
+          reader.readAsDataURL(input.files[0]);
+          init().then(()=>{
+            console.log("hello");
+            predict();
+            $('#loading').hide();
+          });
+
+        } else {
+          removeUpload();
+        }
+      }
+
+      function removeUpload() {
+        $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+        $('.file-upload-content').hide();
+        $('.image-upload-wrap').show();
+      }
+      $('.image-upload-wrap').bind('dragover', function () {
+        $('.image-upload-wrap').addClass('image-dropping');
+      });
+      $('.image-upload-wrap').bind('dragleave', function () {
+        $('.image-upload-wrap').removeClass('image-dropping');
+      });
+    </script>
+    <script type="text/javascript"> // teachablemachine 연결
+      // More API functions here:
+    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    // the link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/CrOstxSE0/";
+
+let model, webcam, labelContainer, maxPredictions;
+
+// Load the image model and setup the webcam
+async function init() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+
+    labelContainer = document.getElementById("label-container");
+    for (let i = 0; i < maxPredictions; i++) { // and class labels
+      var element = document.createElement("div")
+            element.classList.add("d-flex");
+            labelContainer.appendChild(element);
+    }
+}
+
+// run the webcam image through the image model
+async function predict() {
+    // predict can take in an image, video or canvas html element
+    var image = document.getElementById("face-image")
+    const prediction = await model.predict(image, false);
+    prediction.sort((a, b)=> parseFloat(b.probability)-parseFloat(a.probability));
+    var resultTitle, resultExplain;
+    switch(prediction[0].className) {
+      case "casual":
+        resultTitle = "캐주얼 코디"
+        resultExplain = "언제 어디서든 편하게 어울릴 수 있는 당신의 깔끔한 코디!"
+        break;
+      case "dandy":
+        resultTitle = "댄디 코디"
+        resultExplain = "멋쟁이 신사처럼 우아하고 세련된 당신의 깔끔한 코디!"
+        break;
+      case "formal":
+        resultTitle = "포멀 코디"
+        resultExplain = "무난하고 깔끔하지만 신사적으로 보이는 코디"
+        break;
+      case "retro":
+        resultTitle = "레트로 코디"
+        resultExplain = "뽕-짝 뽕-짝 카세트 테이프로 노래를 들을것 같은 당신의 코디!"
+        break;
+      case "sports":
+        resultTitle = "스포츠 코디"
+        resultExplain = "에너지가 넘쳐 보이는 당신의 코디!"
+        break;
+      case "street":
+        resultTitle = "스트릿 코디"
+        resultExplain = "길거리를 런웨이 무대로 만드는 당신의 코디!"
+        break;
+      default:
+        resultTitle = "알수없음"
+        resultExplain = "알수없음"
+    }
+    var title = "<div class='" + prediction[0].className + "-cody-title'>" + resultTitle + "</div>"
+    var explain = "<div class='cody-explain pt-2'>" + resultExplain + "</div>"
+    $('.result-message').html(title + explain);
+    var barWidth;
+    for (let i = 0; i < maxPredictions; i++) {
+            if (prediction[i].probability.toFixed(2) > 0.1) {
+                barWidth = Math.round(prediction[i].probability.toFixed(2) * 100) + "%";
+            } else if (prediction[i].probability.toFixed(2) >= 0.01) {
+                barWidth = "4%"
+            } else {
+                barWidth = "2%"
+            }
+            var labelTitle;
+            switch (prediction[i].className) {
+                case "casual":
+                    labelTitle = "캐주얼"
+                    break;
+                case "dandy":
+                    labelTitle = "댄디"
+                    break;
+                case "formal":
+                    labelTitle = "포멀"
+                    break;
+                case "retro":
+                    labelTitle = "레트로"
+                    break;
+                case "sports":
+                    labelTitle = "스포츠"
+                    break;
+                case "street":
+                    labelTitle = "스트릿"
+                    break;
+                default:
+                    labelTitle = "알수없음"
+            }
+            var label = "<div class='animal-label d-flex align-items-center'>" + labelTitle + "</div>"
+            var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+            labelContainer.childNodes[i].innerHTML = label + bar;
+        }
+  }
+    </script>
+
+  </section>
+
+  <section id="services" class="bg-light" style="color:#333333;">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>사용방법</h2>
+          <p class="lead">코디는 굉장히 주관적이기 때문에 재미로만 봐주시고 아래 사항들을 잘 지켜주시면
+            좀 더 정확한 결과를 얻을 수 있습니다.
+          </p>
+          <ul class="list-group list-group-flush" style="background-color: #f8f9fa;">
+            <li class="list-group-item" style="background-color: #f8f9fa;">전신이 다 나온 서있는 사진을 사용해 주세요.<img src="images/user.png" width="15%"></li>
+            <li class="list-group-item" style="background-color: #f8f9fa;">최대한 배경을 제외하고 사람 부분만 잘라서 사용해 주세요.<img src="images/user2.png" width="15%"></li>
+            <li class="list-group-item" style="background-color: #f8f9fa;">단색 배경일수록 좋아요.</li>
+            <li class="list-group-item" style="background-color: #f8f9fa;">너무 어두운 사진은 피해주세요.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- <section id="contact">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>AD section</h2>
+          <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero odio fugiat voluptatem dolor,
+            provident officiis, id iusto! Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa
+            exercitationem, in, quo totam.</p>
+        </div>
+      </div>
+    </div>
+  </section> -->
+  <div class="ad-banner">
+    <ins class="kakao_ad_area" style="display:none;" 
+ data-ad-unit    = "DAN-fIBfsxdtYq8m3D1d" 
+ data-ad-width   = "320" 
+ data-ad-height  = "100"></ins> 
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+  </div>
+
+  <div id="disqus_thread"></div>
+    <script>
+
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://cody-analysis.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; <a href="https://developerjoice.netlify.app/">Rayleigh</a> 2020</p>
+      <p class="m-0 text-center text-white">Production Assistance by.<a href="https://www.youtube.com/channel/UCQNE2JmbasNYbjGAcuBiRRg">JoCoding</a></p>
+      <p class="m-0 text-center text-white">Icons made by. <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp, </a><a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom JavaScript for this theme -->
+  <script src="js/scrolling-nav.js"></script>
+
+  
+
+</body>
+
+<!-- 
+  The MIT License (MIT)
+Copyright (c) 2013-2020 Start Bootstrap LLC
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+  Copyright (c) 2020 by Aaron Vanston (https://codepen.io/aaronvanston/pen/yNYOXR)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
+
+
+</html>
