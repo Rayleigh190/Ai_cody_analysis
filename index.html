@@ -3,10 +3,17 @@
 
 <head>
 
+  <script data-ad-client="ca-pub-9637519399865887" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- 해결 되라 제발!! -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="naver-site-verification" content="56fa20be21b50bfb9299483dec625344c41a94f9" />
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
+  <meta name="description" content="인공지능이 당신의 코디를 분석해 드립니다.">
   <meta name="author" content="">
+
+  <link rel="canonical" href="https://codyanalysis.ga/">
 
   	
   <meta property="og:title" content="AI(인공지능) 코디 분석" />	
@@ -20,6 +27,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Sunflower:wght@300&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@600&display=swap" rel="stylesheet">
 
+
+  <!-- jcrop를 사용하기 위한 CDN -->
+  <!-- <link type="text/css" rel="stylesheet" href="http://jcrop-cdn.tapmodo.com/v0.9.12/css/jquery.Jcrop.min.css"/>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="http://jcrop-cdn.tapmodo.com/v0.9.12/js/jquery.Jcrop.min.js"></script> -->
+
+   <!-- jcrop를 사용하기 위한 js파일 연결 -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.Jcrop.min.js"></script>
+  <link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css" />
+
+
   <title>AI 코디 분석</title>
 
   <!-- Bootstrap core CSS -->
@@ -32,15 +51,58 @@
   <!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fa259eb8ae90229"></script>
 
-<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> -->
-<!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<!-- 파비콘 임시 주석 -->
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+<script>
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        $('.image-upload-wrap').hide();
+        // $('#loading').show();
+        $('.file-upload-image').attr('src', reader.result);
+        $('.file-upload-content').show();
+
+        $('.image-title').html(input.files[0].name);
+
+          // @details 편집버튼 노출
+        
+          jQuery("#editBtn").css("display", "inline");
+        
+        canvasDrawImage(function() {console.log("확인")});
+      };
+
+      reader.readAsDataURL(input.files[0]);
+      
+
+    } else {
+      removeUpload();
+    }
+  }
+
+  function removeUpload() {
+    $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+    $('.file-upload-content').hide();
+    $('.image-upload-wrap').show();
+  }
+  $('.image-upload-wrap').bind('dragover', function () {
+    $('.image-upload-wrap').addClass('image-dropping');
+  });
+  $('.image-upload-wrap').bind('dragleave', function () {
+    $('.image-upload-wrap').removeClass('image-dropping');
+  });
+</script>
 
 </head>
 
@@ -54,7 +116,7 @@
         aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button> -->
-      <div class="collapse navbar-collapse" id="navbarResponsive">
+      <!-- <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#">About</a>
@@ -66,7 +128,7 @@
             <a class="nav-link js-scroll-trigger" href="#">Contact</a>
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
   </nav>
 
@@ -80,85 +142,123 @@
   <section id="about">
 
 
-    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
     <div class="file-upload container">
 
       <div class="image-upload-wrap">
         <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
         <div class="drag-text">
-          <img src="upload.svg" class="upload mt-5 pt-5" style="width: 20%;">
-          <h3 class="mb-5 pb-5 pt-4 upload-text">Drag and drop a file or select add Image</h3>
+          <img src="upload2.svg" class="upload mt-5 pt-5" style="width: 20%;">
+          <h3 class="mb-5 pb-5 pt-4 upload-text">사진을 올려 두거나 선택해 주세요.</h3>
         </div>
       </div>
       <div class="file-upload-content">
-        <img class="file-upload-image" id="face-image" src="#" alt="your image" />
-        <div id="loading" class="animated bounce">
-          <div class="spinner-border" role="status">
+        <input type="hidden" id="xAxis" value="0" placeholder="선택영여역의_x좌표"/>
+              
+        <input type="hidden" id="yAxis" value="0" placeholder="선택영여역의_y좌표"/>
+        
+        <input type="hidden" id="wLength" value="0" placeholder="선택영여역의_w넓이"/>
+        
+        <input type="hidden" id="hLength" value="0" placeholder="선택영여역의_h높이"/>
+        <!-- 사용할 이미지 -->
+        <img id="editImg" class="file-upload-image" src="#" style="margin: 0 auto;"/>
+        <div id="loading" class="animated bounce  pt-3">
+          <div class="spinner-border " role="status">
               <span class="sr-only">Loading...</span>
           </div>
           <p class="text-center">AI가 당신의 코디를 분석중입니다.</p>
         </div>
-        <p class="result-message"></p>
+        <p class="result-message pt-3"></p>
         <div id="label-container" class="d-flex flex-column justify-content-around"></div>
         
+        
+
+        <div class="image-edit-wrap">
+          <button class="edit-btn " id="editBtn" type="button " onClick="imgCropDesignate();">
+            <span class="image-edit-text">편집</span>
+          </button>
+          <!-- <input class="edit-btn " id="editBtn" type="button " onClick="imgCropDesignate();" value="편집"/> -->
+  
+          <button class="edit-btn " id="cutBtn" type="button " onClick="imgCropApply();">
+            <span class="image-edit-text">자르기</span>
+          </button>
+        
+        </div>
+      
+      <canvas></canvas>
+
+      <div class="recommend-wrap">
+        <button class="try-again-btn" id="recommend-btn" type="button p-2 pt-2" style="display: none;">
+          <a id="recommend-rul" target=”_blank” href="#"><span class="try-again-text">추천 코디 보러 가기</span></a>
+        </button>
+
+      </div>
+      
+
+
         <!-- Go to www.addthis.com/dashboard to customize your tools -->
-        <div class="addthis_inline_share_toolbox"></div>
+        <div class="addthis_inline_share_toolbox" id="addthis_toolbox" style="display: none;"></div>
             
-        <div class="pt-3 image-title-wrap">
-          <button type="button p-2" class="try-again-btn" onclick="window.location.reload();">
+        <div class=" image-title-wrap">
+          <button type="button p-2 pt-2" class="try-again-btn" onclick="window.location.reload();">
               <span class="try-again-text">다른 사진으로 재시도</span>
           </button>
-      </div>
+        </div>
       </div>
     </div>
+    <script type="text/javascript" src="js/jcrop.js"></script>
 
     <div id="webcam-container"></div>
     <div id="label-container"></div>
+
+    <script type="text/javascript">
+        //보이기
+        function div_show(resultTitle) {
+          console.log("echo")
+          
+          document.getElementById("recommend-btn").style.display = "block";
+          document.getElementById("addthis_toolbox").style.display = "block";
+
+
+          switch(resultTitle) {
+            case "캐주얼 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=american_casual&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            case "댄디 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=dandy&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            case "포멀 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=formal_office&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            case "레트로 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=retro&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            case "스포츠 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=sports&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            case "스트릿 코디":
+              document.getElementById("recommend-rul").href = "https://store.musinsa.com/app/styles/lists?use_yn_360=&style_type=street_casual&brand=&model=&max_rt=2020&min_rt=2010&year_date=2020&month_date=&display_cnt=60&list_kind=small&sort=rt&page=1";
+              break;
+            default:
+              console.log("실패")
+            
+          }
+          
+        }
+        
+        //숨기기
+        function div_hide() {
+          document.getElementById("test_div").style.display = "none";
+        }
+    </script>
+
 
     
 
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-    <script>
-      function readURL(input) {
-        if (input.files && input.files[0]) {
-
-          var reader = new FileReader();
-
-          reader.onload = function (e) {
-            $('.image-upload-wrap').hide();
-            $('#loading').show();
-            $('.file-upload-image').attr('src', e.target.result);
-            $('.file-upload-content').show();
-
-            $('.image-title').html(input.files[0].name);
-          };
-
-          reader.readAsDataURL(input.files[0]);
-          init().then(()=>{
-            console.log("hello");
-            predict();
-            $('#loading').hide();
-          });
-
-        } else {
-          removeUpload();
-        }
-      }
-
-      function removeUpload() {
-        $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-        $('.file-upload-content').hide();
-        $('.image-upload-wrap').show();
-      }
-      $('.image-upload-wrap').bind('dragover', function () {
-        $('.image-upload-wrap').addClass('image-dropping');
-      });
-      $('.image-upload-wrap').bind('dragleave', function () {
-        $('.image-upload-wrap').removeClass('image-dropping');
-      });
-    </script>
+    
     <script type="text/javascript"> // teachablemachine 연결
       // More API functions here:
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
@@ -187,7 +287,7 @@ async function init() {
 // run the webcam image through the image model
 async function predict() {
     // predict can take in an image, video or canvas html element
-    var image = document.getElementById("face-image")
+    var image = document.getElementById("editImg")
     const prediction = await model.predict(image, false);
     prediction.sort((a, b)=> parseFloat(b.probability)-parseFloat(a.probability));
     var resultTitle, resultExplain;
@@ -259,6 +359,8 @@ async function predict() {
             var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
             labelContainer.childNodes[i].innerHTML = label + bar;
         }
+        console.log("echo2")
+        div_show(resultTitle);
   }
     </script>
 
@@ -295,11 +397,22 @@ async function predict() {
       </div>
     </div>
   </section> -->
+  
+
   <div class="ad-banner">
+        <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script>
+      new PartnersCoupang.G({ id:377847 });
+    </script>
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script>
+      new PartnersCoupang.G({ id:377848 });
+    </script>
     <ins class="kakao_ad_area" style="display:none;" 
  data-ad-unit    = "DAN-fIBfsxdtYq8m3D1d" 
  data-ad-width   = "320" 
  data-ad-height  = "100"></ins> 
+ <!-- 임시주석 -->
 <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
   </div>
 
@@ -328,15 +441,15 @@ async function predict() {
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; <a href="https://rayleigh190.github.io/profile_card/">Rayleigh</a> 2020</p>
+      <p class="m-0 text-center text-white">Copyright &copy; <a href="https://rayleigh190.github.io/profile_card/">Rayleigh 2020</a></p>
       <p class="m-0 text-center text-white">Production Assistance by.<a href="https://www.youtube.com/channel/UCQNE2JmbasNYbjGAcuBiRRg">JoCoding</a></p>
-      <p class="m-0 text-center text-white">Icons made by. <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp, </a><a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></p>
+      <p class="m-0 text-center text-white">Icons made by. <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp, </a><a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a>, <a href="https://www.flaticon.com/authors/xnimrodx" title="xnimrodx">xnimrodx</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></p>
     </div>
     <!-- /.container -->
   </footer>
 
   <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
+  <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Plugin JavaScript -->
@@ -345,7 +458,6 @@ async function predict() {
   <!-- Custom JavaScript for this theme -->
   <script src="js/scrolling-nav.js"></script>
 
-  
 
 </body>
 
