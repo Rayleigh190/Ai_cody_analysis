@@ -1,0 +1,98 @@
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <link rel="stylesheet" href="style.css">
+
+            <!-- jcrop를 사용하기 위한 CDN -->
+            <link type="text/css" rel="stylesheet" href="http://jcrop-cdn.tapmodo.com/v0.9.12/css/jquery.Jcrop.min.css"/>
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script type="text/javascript" src="http://jcrop-cdn.tapmodo.com/v0.9.12/js/jquery.Jcrop.min.js"></script>
+
+            
+
+            <!-- 드래그앤드랍 파일 업로드 -->
+            <script>
+                function readURL(input) {
+              if (input.files && input.files[0]) {
+            
+                var reader = new FileReader();
+            
+                reader.onload = function(e) {
+                  $('.image-upload-wrap').hide();
+            
+                  $('.file-upload-image').attr('src', reader.result);
+                  $('.file-upload-content').show();
+            
+                  $('.image-title').html(input.files[0].name);
+            
+                  // @details 편집버튼 노출
+            
+                  jQuery("#editBtn").css("display", "inline");
+            
+                    canvasDrawImage(function() {});
+                };
+            
+                reader.readAsDataURL(input.files[0]);
+            
+              } else {
+                removeUpload();
+              }
+            }
+            
+            function removeUpload() {
+              $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+              $('.file-upload-content').hide();
+              $('.image-upload-wrap').show();
+            }
+            $('.image-upload-wrap').bind('dragover', function () {
+                    $('.image-upload-wrap').addClass('image-dropping');
+                });
+                $('.image-upload-wrap').bind('dragleave', function () {
+                    $('.image-upload-wrap').removeClass('image-dropping');
+            });
+            
+            </script>
+        </head>
+
+        <body>
+
+            <div class="file-upload">
+                <div class="image-upload-wrap">
+                  <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+                  <div class="drag-text">
+                    <h3>Drag and drop a file or select add Image</h3>
+                  </div>
+                </div>
+                
+                <div class="file-upload-content">
+                    
+                  <input type="hidden" id="xAxis" value="0" placeholder="선택영여역의_x좌표"/>
+              
+                  <input type="hidden" id="yAxis" value="0" placeholder="선택영여역의_y좌표"/>
+                  
+                  <input type="hidden" id="wLength" value="0" placeholder="선택영여역의_w넓이"/>
+                  
+                  <input type="hidden" id="hLength" value="0" placeholder="선택영여역의_h높이"/>
+              
+                  <!-- 사용할 이미지 -->
+                  <img id="editImg" class="file-upload-image" src="#" style="margin: 0 auto;"/>
+              
+                  <div class="image-title-wrap">
+                      <input id="editBtn" type="button" onClick="imgCropDesignate();" value="편집"/>
+                      <input id="cutBtn" type="button" onClick="imgCropApply();" value="자르기"/>
+                  </div>
+                  
+                  <canvas></canvas>
+                  <div class="image-title-wrap">
+                    <button type="button" onclick="window.location.reload();" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                    
+                  </div>
+                </div>
+              </div>
+              
+              <script type="text/javascript" src="jcrop.js"></script>
+        </body>
+
+
+    </html>
+

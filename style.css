@@ -2,6 +2,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Sunflower:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@600&display=swap');
 
+
+.jcrop-holder {
+  direction: ltr;
+  text-align: left;
+  margin: 0 auto;
+}
+
+canvas, #uploadFile, #editBtn, #cutBtn { display:none; }
+
+.cropapp {
+  position: absolute;
+  width: 90%;
+  height: 80%;
+  left: 5%;
+  background: lightgray;
+}
+
+.cropbox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+img#target { max-width: 780px; }
+
+
+
+/* ------------------------- */
 body {
   font-family: 'Gothic A1', sans-serif;
     background-color: #eeeeee;
@@ -14,6 +44,10 @@ header {
   background-repeat : no-repeat;
   background-position: center;
   background-size : cover;
+}
+a { text-decoration:none }
+a:hover {
+  text-decoration: none;
 }
 
   .file-upload {
@@ -77,7 +111,7 @@ header {
   .image-upload-wrap {
     width: 65%;
     margin: 0 auto;
-    border: dashed 1.5px #35465d;
+    border: dotted 1.5px #35465d;
     position: relative;
     object-fit: contain;
     border-radius: 10px;
@@ -89,9 +123,14 @@ header {
     background-color: #A0C5E8;
     border: 1.5px dashed #ffffff;
   }
+
+  .image-edit-wrap {
+    padding: 0 15px 15px 15px;
+    color: #222;
+  }
   
   .image-title-wrap {
-    padding: 0 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     color: #222;
   }
   
@@ -113,10 +152,10 @@ header {
   }
   
   .file-upload-image {
-    max-height: 60%;
+    /* max-height: 60%; */
     max-width: 60%;
-    margin: auto;
-    padding: 10px;
+    /* margin: auto;
+    padding: 10px; */
   }
   
   .remove-image {
@@ -134,10 +173,30 @@ header {
     font-weight: 700;
   }
 
+  .edit-btn {
+    border-radius: 40px;
+    border: solid 1.5px #35465d;
+    background-color: #35465d;
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    padding: 4px 15px;
+  }
+
   .try-again-btn {
     border-radius: 40px;
     border: solid 1.5px #35465d;
     background-color: #35465d;
+    margin: 0 auto;
+}
+
+.image-edit-text {
+  display: block;
+  font-size: 1.3rem;
+  text-align: center;
+  color: #ffffff;
+  padding: 4px 15px;
+
 }
 .try-again-text {
   display: block;
@@ -339,4 +398,8 @@ header {
 .ad-banner{
   width: 320px;
   margin: 0 auto;
+}
+
+.recommend-wrap {
+  padding-bottom: 15px;
 }
